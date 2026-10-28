@@ -1,3 +1,15 @@
+git switch main
+git pull origin main
+git switch -c feature/ten-tinh-nang
+
+# Sau khi sửa code
+git add .
+git commit -m "Describe your changes"
+git push -u origin feature/ten-tinh-nang
+
+
+
+
 main: nhánh chính, chỉ chứa code đã kiểm tra.
 
 feature/backend-...: tính năng Backend.
