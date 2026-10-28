@@ -48,3 +48,24 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Android / Gradle
+**/.gradle/
+**/build/
+**/.kotlin/
+**/local.properties
+
+# Backend
+**/target/
+**/.env
+**/.env.*
+
+# Sensitive configuration
+**/application-local.yml
+**/application-local.properties
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
