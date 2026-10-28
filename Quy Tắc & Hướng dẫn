@@ -1,0 +1,59 @@
+main: nhánh chính, chỉ chứa code đã kiểm tra.
+
+feature/backend-...: tính năng Backend.
+
+feature/android-...: tính năng Android.
+
+fix/...: sửa lỗi.
+
+Mỗi thành viên tạo nhánh riêng cho công việc được giao.
+
+Không tự ý push trực tiếp lên main; hãy tạo Pull Request để trưởng nhóm hoặc thành viên được phân công review.
+
+Không commit mật khẩu, file build hoặc cấu hình riêng của máy.
+
+
+
+Hướng dẫn cho thành viên mới clone dự án
+Mỗi thành viên cần có Git và quyền truy cập repository Private trên GitHub.
+
+Lần đầu tiên, thành viên chạy:
+git clone https://github.com/phaotan53-afk/SmartMart.git
+cd SmartMart
+git switch -c feature/ten-tinh-nang
+
+
+Thay ten-tinh-nang bằng tên công việc thực tế. Ví dụ:
+git switch -c feature/android-cart
+
+
+Sau đó mở đúng thư mục dự án trong IDE:
+- Android Studio: mở thư mục android/.
+- IntelliJ IDEA: mở thư mục backend/ để làm Spring Boot.
+- Công cụ SQL: sử dụng các tệp trong database/.
+Nếu cần cập nhật code mới nhất từ main trước khi bắt đầu làm việc:
+git switch main
+git pull origin main
+git switch feature/android-cart
+
+
+4.4. Quy trình commit và push
+Sau khi hoàn thành một phần công việc, thành viên chạy các lệnh sau trên nhánh của mình:
+git status
+git add .
+git commit -m "Add Android cart screen"
+git push -u origin feature/android-cart
+
+
+Lần push đầu tiên dùng -u; những lần sau có thể dùng:
+git push
+
+
+Sau đó, thành viên mở GitHub, tạo Pull Request từ nhánh tính năng vào main, mô tả nội dung thay đổi và chờ review.
+
+Khi Pull Request được chấp nhận và merge, các thành viên cập nhật nhánh chính bằng:
+git switch main
+git pull origin main
+
+
+Không yêu cầu mọi người cùng làm trên một nhánh main.
