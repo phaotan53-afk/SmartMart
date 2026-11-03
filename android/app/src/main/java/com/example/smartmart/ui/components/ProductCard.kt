@@ -1,6 +1,6 @@
 
 package com.example.smartmart.ui.components
-
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +33,10 @@ private val GrayText = Color(0xFF6B7280)
 
 
 @Composable
-fun ProductCard(product: Product) {
+fun ProductCard(
+    product: Product,
+    onClick: () -> Unit = {}
+) {
 
     val formattedPrice = NumberFormat
         .getNumberInstance(Locale.forLanguageTag("vi-VN"))
@@ -42,6 +45,7 @@ fun ProductCard(product: Product) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .border(
                 width = 1.dp,
                 color = LightBorder,
