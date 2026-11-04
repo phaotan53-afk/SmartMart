@@ -1,0 +1,98 @@
+
+<section class="product-section">
+
+  <div class="section-header">
+    <div>
+      <h2>Danh sách sản phẩm</h2>
+      <p>Quản lý sản phẩm trong hệ thống</p>
+    </div>
+
+    <span class="result-count">
+      {{ filteredProducts.length }} sản phẩm
+    </span>
+  </div>
+
+  <div class="table-container">
+
+    <table>
+      <thead>
+        <tr>
+          <th>SẢN PHẨM</th>
+          <th>SKU</th>
+          <th>DANH MỤC</th>
+          <th>GIÁ</th>
+          <th>TỒN KHO</th>
+          <th>TRẠNG THÁI</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let product of filteredProducts">
+
+          <td>
+            <div class="product-info">
+              <div class="product-image">
+                {{ product.image }}
+              </div>
+
+              <div>
+                <strong>{{ product.name }}</strong>
+                <small>ID: {{ product.id }}</small>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <span class="sku">{{ product.sku }}</span>
+          </td>
+
+          <td>
+            <span class="category-tag">
+              {{ product.category }}
+            </span>
+          </td>
+
+          <td>
+            <strong class="price">
+              {{ formatPrice(product.price) }}
+            </strong>
+          </td>
+
+          <td>
+            <span
+              [class.stock-low]="product.stock > 0 && product.stock < 30"
+              [class.stock-normal]="product.stock >= 30"
+              [class.stock-zero]="product.stock === 0"
+            >
+              {{ product.stock }}
+            </span>
+          </td>
+
+          <td>
+            <span
+              class="status"
+              [class.status-available]="product.stock > 0"
+              [class.status-out]="product.stock === 0"
+            >
+              {{ product.stock > 0 ? 'Còn hàng' : 'Hết hàng' }}
+            </span>
+          </td>
+
+        </tr>
+
+        <tr *ngIf="filteredProducts.length === 0">
+          <td colspan="6">
+            <div class="empty-state">
+              <h3>Không tìm thấy sản phẩm</h3>
+              <p>Thử thay đổi từ khóa hoặc danh mục.</p>
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+  </div>
+
+</section>

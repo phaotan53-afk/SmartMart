@@ -1,0 +1,148 @@
+
+.product-section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-header h2 {
+  margin: 0 0 8px;
+  color: #047857;
+}
+
+.section-header p {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.result-count {
+  color: #047857;
+  background: #ecfdf5;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 750px;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f9fafb;
+}
+
+th {
+  padding: 15px 12px;
+  text-align: left;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 13px;
+}
+
+tbody tr:hover {
+  background: #f9fafb;
+}
+
+.product-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.product-image {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f3f4f6;
+  border-radius: 8px;
+  font-size: 22px;
+}
+
+.product-info strong {
+  display: block;
+}
+
+.product-info small {
+  display: block;
+  margin-top: 5px;
+  color: #9ca3af;
+}
+
+.sku {
+  color: #6b7280;
+  font-family: monospace;
+}
+
+.category-tag {
+  background: #f3f4f6;
+  padding: 6px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.price {
+  color: #047857;
+  white-space: nowrap;
+}
+
+.stock-normal {
+  color: #047857;
+  font-weight: bold;
+}
+
+.stock-low {
+  color: #d97706;
+  font-weight: bold;
+}
+
+.stock-zero {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.status {
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+.status-available {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.status-out {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 35px;
+}
+
+.empty-state p {
+  color: #9ca3af;
+}
