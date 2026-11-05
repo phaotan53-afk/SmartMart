@@ -2,10 +2,13 @@ package com.example.smartmart.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// SWA-36 — Lê Tuấn Thành. Shared SmartMart design tokens for team integration.
+val SmartMartGreen = Color(0xFF16A34A)
+val SmartMartPressedGreen = Color(0xFF15803D)
+val SmartMartLightGreen = Color(0xFFDCFCE7)
+val SmartMartBackground = Color(0xFFF9FAFB)
+val SmartMartSurface = Color(0xFFFFFFFF)
+val SmartMartText = Color(0xFF1F2937)
+val SmartMartSecondaryText = Color(0xFF6B7280)
+val SmartMartBorder = Color(0xFFE5E7EB)
+val SmartMartError = Color(0xFFDC2626)

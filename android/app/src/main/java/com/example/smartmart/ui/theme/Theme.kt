@@ -1,58 +1,60 @@
 package com.example.smartmart.ui.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+private val SmartMartColorScheme = lightColorScheme(
+    primary = SmartMartGreen,
+    onPrimary = SmartMartSurface,
+    primaryContainer = SmartMartLightGreen,
+    onPrimaryContainer = SmartMartPressedGreen,
+    secondary = SmartMartPressedGreen,
+    onSecondary = SmartMartSurface,
+    secondaryContainer = SmartMartLightGreen,
+    onSecondaryContainer = SmartMartPressedGreen,
+    background = SmartMartBackground,
+    onBackground = SmartMartText,
+    surface = SmartMartSurface,
+    onSurface = SmartMartText,
+    surfaceVariant = SmartMartBackground,
+    onSurfaceVariant = SmartMartSecondaryText,
+    surfaceContainer = SmartMartBackground,
+    surfaceContainerLow = SmartMartSurface,
+    outline = SmartMartBorder,
+    outlineVariant = SmartMartBorder,
+    error = SmartMartError,
+    onError = Color.White,
+    errorContainer = Color(0xFFFEF2F2),
+    onErrorContainer = SmartMartError,
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
-)
-
+/**
+ * SWA-36 — Lê Tuấn Thành. Sprint 1 specifies a fixed light palette.
+ * Existing parameters remain source-compatible; dark/dynamic palettes are not enabled
+ * until the team supplies the corresponding design tokens.
+ */
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun SmartMartTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    darkTheme: Boolean = false,
+    dynamicColor: Boolean = false,
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = SmartMartColorScheme,
         typography = Typography,
-        content = content
+        shapes = Shapes(
+            extraSmall = RoundedCornerShape(4.dp),
+            small = RoundedCornerShape(8.dp),
+            medium = RoundedCornerShape(12.dp),
+            large = RoundedCornerShape(12.dp),
+            extraLarge = RoundedCornerShape(12.dp),
+        ),
+        content = content,
     )
 }

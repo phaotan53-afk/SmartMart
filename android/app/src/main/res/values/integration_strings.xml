@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_product_list">Danh sách sản phẩm</string>
+    <string name="host_list_error">Không thể tải danh sách sản phẩm. Vui lòng kiểm tra kết nối và thử lại.</string>
+    <string name="host_retry">Thử lại</string>
+    <string name="host_empty">Chưa có sản phẩm nào.</string>
+    <string name="host_view_detail">Xem chi tiết →</string>
+    <string name="host_cart_unavailable">Giỏ hàng chưa khả dụng trong phiên bản này.</string>
+    <string name="host_local_permission_title">Kết nối máy chủ thử nghiệm</string>
+    <string name="host_local_permission_body">Bản thử nghiệm cần quyền truy cập mạng nội bộ để tải sản phẩm từ máy chủ trên máy tính của bạn.</string>
+    <string name="host_local_permission_action">Cho phép kết nối</string>
+</resources>

@@ -1,45 +1,55 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+# SmartMart Master
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+Bản hợp nhất Android Kotlin Jetpack Compose, Backend Kotlin Spring Boot và Microsoft SQL Server. Bản nền được sao chép từ nguồn nhóm trên đĩa; phần chi tiết sản phẩm được tái sử dụng có chọn lọc từ Demo; các nghiệp vụ còn thiếu được bổ sung trong đợt hợp nhất theo yêu cầu của Lê Tuấn Thành, có hỗ trợ AI. Không gán phần bổ sung thành code lịch sử của thành viên.
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+Đường dẫn làm việc: `D:\TuanThanh\Workspace\Projects\SmartMart-Master`. Mở **thư mục android** trong Android Studio. Hai nguồn `SmartMart` và `Demo` được giữ để đối chiếu; không chạy công cụ bàn giao trong nguồn.
 
----
+## Chạy nhanh trên máy hiện tại
 
-## Edit a file
+Dùng PowerShell 7 tại thư mục SmartMart-Master:
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+```powershell
+.\tools\Test-Environment.ps1
+.\tools\initialize-sql-master.ps1
+.\tools\start-backend.ps1 -Build
+```
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+Initializer tạo hoặc nâng cấp database phát triển riêng `SmartMartMaster_20261105`, không ghi vào database `SmartMart` của nhóm. Lần đầu cần Windows login có quyền tạo DB/login; máy hiện tại đã thực hiện bước này. Credential riêng được lưu tại `.local/backend.env.ps1` với ACL giới hạn, không đóng gói hoặc commit. Spring không tự đọc `.env`; script khởi động nạp biến môi trường. `backend/.env.example` chỉ là danh sách cấu hình mẫu.
 
----
+Trong Android Studio, mở `D:\TuanThanh\Workspace\Projects\SmartMart-Master\android`, chọn SDK đã cài và Gradle JDK 25, đồng bộ rồi chạy cấu hình app trên emulator API 37. Backend cần đang chạy ở cổng 8080. Debug mặc định dùng `http://10.0.2.2:8080/`; cấp quyền mạng cục bộ khi Android SDK 37 yêu cầu. Tạo tài khoản CUSTOMER ngay trong ứng dụng để thử luồng giỏ/đơn; không có userId cố định hay tài khoản quản trị công khai.
 
-## Create a file
+Build Android từ dòng lệnh:
 
-Next, you’ll add a new file to this repository.
+```powershell
+.\tools\Build-Android.ps1
+.\tools\Build-Android.ps1 -ConnectedTests
+```
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+Nếu chạy trên máy thật, cấu hình URL LAN/HTTPS và kết nối phù hợp, ví dụ `-Psmartmart.baseUrl=https://dia-chi-backend-cua-ban/`. Bản release chặn HTTP không mã hóa. Không dùng địa chỉ IP hoặc đường dẫn riêng của tác giả trong mã ứng dụng.
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+## Phiên bản được giữ
 
----
+Android: AGP 9.5.0, Gradle 9.6.0, SDK 37, daemon JDK 25. Backend: Spring Boot 4.1.2, Kotlin 2.3.21, Gradle 9.8.2, Java toolchain 21 và daemon JDK 25. Wrapper JAR Android bị thiếu trong nền đã được khôi phục từ bản Demo phù hợp. Không hạ SDK/JDK theo prompt cũ. Lỗi Windows AF_UNIX của Gradle được xử lý cục bộ trong `Use-LocalBuildEnvironment.ps1`, không sửa JDK, registry hoặc firewall.
 
-## Clone a repository
+## Cấu trúc
 
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
+- `android`: ứng dụng Compose native; UI → ViewModel → Repository → Retrofit/OkHttp.
+- `backend`: REST controller, service/transaction, JDBC có tham số và SQL Server.
+- `SmartMartDB`: thư mục dữ liệu chung gồm schema SQL Server của nhóm, migrations, seeds và tài liệu thiết kế.
+- `tools`: kiểm tra môi trường, khởi tạo DB, build/chạy, E2E và thu thập bằng chứng.
+- `docs`: tài liệu tiếng Việt, ma trận chức năng, API/OpenAPI, nguồn gốc, kiểm thử và báo cáo Word.
+- `.local`: cấu hình riêng, credential và bản sao baseline; không thuộc gói nguồn bàn giao.
 
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
+## Luồng và giới hạn cần biết
 
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+Catalog công khai dùng `/api/v1/products` có phân trang; detail giữ `/api/products/{id}` với `id/name`. API collection cũ `/api/products` giữ List và `productId/productName`, nhưng yêu cầu ADMIN vì chứa giá vốn. Giỏ, địa chỉ, đơn và đánh giá được kiểm tra session/quyền sở hữu. Giá và tồn được kiểm lại khi ghi. COD vừa tạo là UNPAID; giao thành công cũng chưa tự đánh dấu đã thu tiền.
+
+Ví điện tử/thẻ và tối ưu tuyến đường trả lỗi chưa cấu hình rõ ràng; chưa có giao dịch online hoặc nghiệm thu nhà cung cấp. Vị trí shipper là dữ liệu tài khoản shipper gửi có thời điểm ghi, không tự nhận là GPS realtime. Seed có nhãn demo và ảnh minh họa có giấy phép; không dùng số đánh giá/doanh số từ ảnh tham chiếu làm dữ liệu thật.
+
+Kết quả mới, số test và điều kiện chưa nghiệm thu xem `docs/BAO_CAO_KIEM_THU.md`, `docs/MA_TRAN_CHUC_NANG.csv` và `docs/TON_DONG_VA_GIOI_HAN.md`. Không dùng số 33/9/4 trong báo cáo cũ thay kết quả đợt này.
+
+## Tài liệu bàn giao
+
+Bắt đầu với `docs/HUONG_DAN_CHAY_VA_DEMO.md`; xem `API_REFERENCE.md` và `openapi.json` cho hợp đồng API, `DATABASE_GUIDE.md` cho dữ liệu, `DOI_CHIEU_YEU_CAU_VA_PHAN_CONG.md` và `PHAN_VIEC_LE_TUAN_THANH.md` cho phân công, `NGUON_GOC_THAY_DOI.csv` cho từng file. Báo cáo trình bày là `docs/BAO_CAO_SMARTMART_MASTER.docx` và bản Markdown tương ứng.
+
+Trong môi trường phát triển, người có quyền SQL Windows có thể cấp role cho tài khoản đã đăng ký bằng `tools/Set-DevelopmentRole.ps1 -Email email-cua-ban -Role ADMIN` (hoặc WAREHOUSE_MANAGER/SHIPPER). Script chỉ làm việc trong DB Master, dùng SQL có tham số, không đổi mật khẩu và buộc đăng nhập lại. Ứng dụng không tự nhận role từ client. Không đưa token quản trị vào thiết bị/emulator để làm fixture.
