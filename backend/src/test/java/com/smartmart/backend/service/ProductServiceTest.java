@@ -327,4 +327,30 @@ class ProductServiceTest {
         when(productRepository.findById(100L)).thenReturn(Optional.empty());
         assertFalse(productService.layChiTietSanPhamTheoId(100L).isPresent());
     }
+    // --- UNIT TEST CHO SWA-82: Lấy danh sách sản phẩm gợi ý ---
+
+    @Test
+    void testLayDanhSachGoiY_ThanhCong() {
+        // 1. Giả lập dữ liệu sản phẩm hiện tại (ID: 1, Danh mục: 10)
+        Product sanPhamHienTai = new Product(1L, "Áo thun nam", 100000.0, 10L, "Mô tả", 50, 4.5);
+
+        // 2. Giả lập danh sách sản phẩm gợi ý cùng danh mục (ID: 2 và 3)
+        Product spGoiY1 = new Product(2L, "Áo sơ mi nam", 150000.0, 10L, "Mô tả 1", 30, 4.0);
+        Product spGoiY2 = new Product(3L, "Áo khoác nam", 200000.0, 10L, "Mô tả 2", 20, 5.0);
+
+        List<Product> danhSachGoiYFake = List.of(spGoiY1, spGoiY2);
+
+        // 3. Định nghĩa hành vi của Repository (Mockito)
+        when(productRepository.findById(1L)).thenReturn(Optional.of(sanPhamHienTai));
+        when(productRepository.findTop6ByMaDanhMucAndMaSanPhamNot(10L, 1L)).thenReturn(danhSachGoiYFake);
+
+        // 4. Gọi phương thức cần test
+        List<Product> ketQua = productService.layDanhSachGoiY(1L);
+
+        // 5. Kiểm tra kết quả
+        assertNotNull(ketQua);
+        assertEquals(2, ketQua.size());
+        assertEquals("Áo sơ mi nam", ketQua.get(0).getTenSanPham());
+        verify(productRepository, times(1)).findTop6ByMaDanhMucAndMaSanPhamNot(10L, 1L);
+    }
 }

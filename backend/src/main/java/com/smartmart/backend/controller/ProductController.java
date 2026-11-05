@@ -1,5 +1,6 @@
 package com.smartmart.backend.controller;
 
+import java.util.List;
 import com.smartmart.backend.model.Product;
 import com.smartmart.backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,12 @@ public class ProductController {
         return productService.layChiTietSanPhamTheoId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Endpoint SWA-82: API Xem sản phẩm được gợi ý
+    @GetMapping("/{id}/recommendations")
+    public ResponseEntity<List<Product>> layDanhSachGoiY(@PathVariable Long id) {
+        List<Product> danhSachGoiY = productService.layDanhSachGoiY(id);
+        return ResponseEntity.ok(danhSachGoiY);
     }
 }

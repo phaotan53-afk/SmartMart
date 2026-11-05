@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
@@ -23,4 +25,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("giaToiDa") Double giaToiDa,
             Pageable pageable
     );
+
+    // Gợi ý sản phẩm cùng danh mục (khác sản phẩm đang xem)
+    List<Product> findTop6ByMaDanhMucAndMaSanPhamNot(Long maDanhMuc, Long maSanPham);
 }

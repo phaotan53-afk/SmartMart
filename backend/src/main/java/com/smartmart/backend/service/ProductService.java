@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
-
+import java.util.List;
 @Service
 public class ProductService {
 
@@ -30,4 +30,20 @@ public class ProductService {
         }
         return productRepository.findById(id);
     }
+    // SWA-82: Lấy danh sách sản phẩm gợi ý cùng danh mục
+    public List<Product> layDanhSachGoiY(Long maSanPham) {
+        if (maSanPham == null || maSanPham <= 0) {
+            throw new IllegalArgumentException("Mã sản phẩm không hợp lệ");
+        }
+
+        // 1. Tìm sản phẩm hiện tại để lấy mã danh mục
+        Product sanPhamHienTai = productRepository.findById(maSanPham)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm với ID: " + maSanPham));
+
+        // 2. Lấy danh sách gợi ý cùng mã danh mục (loại trừ sản phẩm hiện tại)
+        return productRepository.findTop6ByMaDanhMucAndMaSanPhamNot(
+                sanPhamHienTai.getMaDanhMuc(), 
+                maSanPham
+        );
+}
 }
