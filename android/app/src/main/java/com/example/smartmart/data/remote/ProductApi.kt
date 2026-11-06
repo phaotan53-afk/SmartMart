@@ -11,8 +11,7 @@ import java.net.URL
 
 object ProductApi {
 
-    private const val PRODUCTS_URL =
-        "http://127.0.0.1:8080/api/products"
+    private const val PRODUCTS_URL = "http://10.0.2.2:8080/api/products"
 
     suspend fun getProducts(): List<Product> =
         withContext(Dispatchers.IO) {
