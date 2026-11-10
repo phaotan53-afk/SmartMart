@@ -6,5 +6,7 @@ data class Product(
     val sku: String,
     val unit: String,
     val price: Double,
-    val isActive: Boolean
+    val isActive: Boolean,
+    val categoryId: Long? = null,
+    val description: String = ""
 )
