@@ -1,48 +1,24 @@
 
 package com.example.smartmart.ui.customer
-import com.example.smartmart.ui.components.SmartMartBackButton
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.smartmart.data.model.Product
 import com.example.smartmart.data.remote.ProductApi
 import com.example.smartmart.ui.components.ProductCard
+import com.example.smartmart.ui.components.SmartMartBackButton
 
 private val SmartGreen = Color(0xFF16A34A)
 private val DarkGreen = Color(0xFF15803D)
@@ -55,7 +31,6 @@ private val TextGray = Color(0xFF6B7280)
 fun CustomerProductScreen(
     onBackClick: () -> Unit
 ) {
-
     var products by remember {
         mutableStateOf<List<Product>>(emptyList())
     }
@@ -72,18 +47,67 @@ fun CustomerProductScreen(
         mutableIntStateOf(0)
     }
 
+    // SWA-36: Sản phẩm đang được chọn
+    var selectedProductId by remember {
+        mutableStateOf<Long?>(null)
+    }
+
+    // SWA-17: Dữ liệu đang nhập
+    var keyword by remember { mutableStateOf("") }
+    var minPriceText by remember { mutableStateOf("") }
+    var maxPriceText by remember { mutableStateOf("") }
+
+    // SWA-17: Bộ lọc đã áp dụng
+    var appliedKeyword by remember { mutableStateOf("") }
+
+    var appliedMinPrice by remember {
+        mutableStateOf<Double?>(null)
+    }
+
+    var appliedMaxPrice by remember {
+        mutableStateOf<Double?>(null)
+    }
+
+    var isFilterApplied by remember {
+        mutableStateOf(false)
+    }
+
+    var validationMessage by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    // Tải sản phẩm từ Backend
     LaunchedEffect(refreshKey) {
         isLoading = true
         errorMessage = null
 
         try {
-            products = ProductApi.getProducts()
+            products = if (isFilterApplied) {
+                ProductApi.searchProducts(
+                    keyword = appliedKeyword,
+                    minPrice = appliedMinPrice,
+                    maxPrice = appliedMaxPrice
+                )
+            } else {
+                ProductApi.getProducts()
+            }
         } catch (e: Exception) {
             errorMessage = e.message
                 ?: "Không thể kết nối đến máy chủ"
         } finally {
             isLoading = false
         }
+    }
+
+    // SWA-36: Hiển thị chi tiết khi chọn sản phẩm
+    if (selectedProductId != null) {
+        CustomerProductDetailScreen(
+            productId = selectedProductId!!,
+            onBackClick = {
+                selectedProductId = null
+            }
+        )
+        return
     }
 
     Scaffold(
@@ -107,9 +131,7 @@ fun CustomerProductScreen(
                             fontSize = 22.sp
                         )
 
-                        Spacer(
-                            modifier = Modifier.width(8.dp)
-                        )
+                        Spacer(Modifier.width(8.dp))
 
                         Text(
                             text = "SmartMart",
@@ -121,7 +143,9 @@ fun CustomerProductScreen(
                 },
                 actions = {
                     TextButton(
-                        onClick = { refreshKey++ }
+                        onClick = {
+                            refreshKey++
+                        }
                     ) {
                         Text(
                             text = "Làm mới",
@@ -143,7 +167,7 @@ fun CustomerProductScreen(
                 .padding(horizontal = 16.dp)
         ) {
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(Modifier.height(16.dp))
 
             Text(
                 text = "Khám phá sản phẩm",
@@ -152,7 +176,7 @@ fun CustomerProductScreen(
                 color = TextDark
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(Modifier.height(6.dp))
 
             Text(
                 text = "Danh sách sản phẩm tại SmartMart",
@@ -160,43 +184,182 @@ fun CustomerProductScreen(
                 color = TextGray
             )
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(Modifier.height(16.dp))
 
-            // Thanh giới thiệu tính năng tìm kiếm
-            // Chưa có thao tác tìm kiếm trong SWA-35
+            // SWA-17: Ô tìm kiếm
+            OutlinedTextField(
+                value = keyword,
+                onValueChange = {
+                    keyword = it
+                    validationMessage = null
+                },
+                modifier = Modifier.fillMaxWidth(),
+                label = {
+                    Text("Tìm kiếm sản phẩm")
+                },
+                placeholder = {
+                    Text("Nhập tên sản phẩm hoặc SKU")
+                },
+                singleLine = true,
+                leadingIcon = {
+                    Text("⌕", fontSize = 22.sp)
+                },
+                shape = RoundedCornerShape(12.dp)
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            // SWA-17: Bộ lọc giá
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        Color.White,
-                        RoundedCornerShape(12.dp)
-                    )
-                    .border(
-                        1.dp,
-                        Color(0xFFE5E7EB),
-                        RoundedCornerShape(12.dp)
-                    )
-                    .padding(14.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement =
+                    Arrangement.spacedBy(10.dp)
             ) {
-                Text(
-                    text = "⌕",
-                    fontSize = 22.sp,
-                    color = TextGray
+
+                OutlinedTextField(
+                    value = minPriceText,
+                    onValueChange = {
+                        minPriceText = it
+                        validationMessage = null
+                    },
+                    modifier = Modifier.weight(1f),
+                    label = {
+                        Text("Giá từ")
+                    },
+                    placeholder = {
+                        Text("0")
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    shape = RoundedCornerShape(12.dp)
                 )
 
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Text(
-                    text = "Tìm kiếm sản phẩm (sắp ra mắt)",
-                    fontSize = 13.sp,
-                    color = TextGray
+                OutlinedTextField(
+                    value = maxPriceText,
+                    onValueChange = {
+                        maxPriceText = it
+                        validationMessage = null
+                    },
+                    modifier = Modifier.weight(1f),
+                    label = {
+                        Text("Giá đến")
+                    },
+                    placeholder = {
+                        Text("100000")
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    shape = RoundedCornerShape(12.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
+            if (validationMessage != null) {
+                Spacer(Modifier.height(6.dp))
 
+                Text(
+                    text = validationMessage ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp
+                )
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // SWA-17: Nút tìm kiếm và xóa lọc
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement =
+                    Arrangement.spacedBy(10.dp)
+            ) {
+
+                Button(
+                    onClick = {
+                        val minPrice = minPriceText
+                            .trim()
+                            .takeIf { it.isNotEmpty() }
+                            ?.toDoubleOrNull()
+
+                        val maxPrice = maxPriceText
+                            .trim()
+                            .takeIf { it.isNotEmpty() }
+                            ?.toDoubleOrNull()
+
+                        val invalidMin =
+                            minPriceText.isNotBlank() &&
+                                    minPrice == null
+
+                        val invalidMax =
+                            maxPriceText.isNotBlank() &&
+                                    maxPrice == null
+
+                        validationMessage = when {
+                            invalidMin || invalidMax ->
+                                "Giá phải là số hợp lệ"
+
+                            minPrice != null && minPrice < 0 ->
+                                "Giá không được âm"
+
+                            maxPrice != null && maxPrice < 0 ->
+                                "Giá không được âm"
+
+                            minPrice != null &&
+                                    maxPrice != null &&
+                                    minPrice > maxPrice ->
+                                "Giá từ không được lớn hơn giá đến"
+
+                            else -> null
+                        }
+
+                        if (validationMessage == null) {
+                            appliedKeyword = keyword.trim()
+                            appliedMinPrice = minPrice
+                            appliedMaxPrice = maxPrice
+                            isFilterApplied = true
+                            refreshKey++
+                        }
+                    },
+                    modifier = Modifier.weight(1f),
+                    enabled = !isLoading,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = SmartGreen
+                    )
+                ) {
+                    Text("Tìm kiếm")
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        keyword = ""
+                        minPriceText = ""
+                        maxPriceText = ""
+
+                        appliedKeyword = ""
+                        appliedMinPrice = null
+                        appliedMaxPrice = null
+                        isFilterApplied = false
+
+                        validationMessage = null
+                        refreshKey++
+                    },
+                    modifier = Modifier.weight(1f),
+                    enabled = !isLoading
+                ) {
+                    Text(
+                        text = "Xóa lọc",
+                        color = DarkGreen
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // Hiển thị trạng thái dữ liệu
             when {
+
                 isLoading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -211,30 +374,30 @@ fun CustomerProductScreen(
                 errorMessage != null -> {
                     Column(
                         modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        horizontalAlignment =
+                            Alignment.CenterHorizontally,
+                        verticalArrangement =
+                            Arrangement.Center
                     ) {
                         Text(
-                            text = "Không thể tải danh sách sản phẩm",
+                            text = "Không thể tải sản phẩm",
                             fontWeight = FontWeight.Bold,
                             color = TextDark
                         )
 
-                        Spacer(
-                            modifier = Modifier.height(8.dp)
-                        )
+                        Spacer(Modifier.height(8.dp))
 
                         Text(
                             text = errorMessage ?: "",
                             color = TextGray
                         )
 
-                        Spacer(
-                            modifier = Modifier.height(16.dp)
-                        )
+                        Spacer(Modifier.height(16.dp))
 
                         Button(
-                            onClick = { refreshKey++ },
+                            onClick = {
+                                refreshKey++
+                            },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = SmartGreen
                             )
@@ -250,7 +413,11 @@ fun CustomerProductScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Hiện chưa có sản phẩm nào",
+                            text = if (isFilterApplied) {
+                                "Không tìm thấy sản phẩm phù hợp"
+                            } else {
+                                "Hiện chưa có sản phẩm nào"
+                            },
                             color = TextGray
                         )
                     }
@@ -258,19 +425,18 @@ fun CustomerProductScreen(
 
                 else -> {
                     Text(
-                        text = "Tổng số: ${products.size} sản phẩm",
+                        text = "Hiển thị ${products.size} sản phẩm",
                         fontSize = 13.sp,
                         color = DarkGreen,
                         fontWeight = FontWeight.SemiBold
                     )
 
-                    Spacer(
-                        modifier = Modifier.height(14.dp)
-                    )
+                    Spacer(Modifier.height(12.dp))
 
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement =
+                            Arrangement.spacedBy(12.dp),
                         contentPadding = PaddingValues(
                             bottom = 24.dp
                         )
@@ -279,7 +445,15 @@ fun CustomerProductScreen(
                             items = products,
                             key = { it.productId }
                         ) { product ->
-                            ProductCard(product = product)
+
+                            // SWA-36: Nhấn để mở chi tiết
+                            ProductCard(
+                                product = product,
+                                onClick = {
+                                    selectedProductId =
+                                        product.productId
+                                }
+                            )
                         }
                     }
                 }
