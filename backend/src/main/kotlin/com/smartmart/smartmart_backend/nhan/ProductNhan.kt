@@ -3,28 +3,25 @@ package com.smartmart.smartmart_backend.nhan
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "products")
+@Table(name = "Products")
 data class ProductNhan(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ma_san_pham")
+    @Column(name = "ProductID")
     var maSanPham: Long? = null,
 
-    @Column(name = "ten_san_pham", nullable = false)
+    @Column(name = "ProductName", nullable = false)
     var tenSanPham: String = "",
 
-    @Column(name = "gia_ban", nullable = false)
+    @Column(name = "Price", nullable = false)
     var giaBan: Double = 0.0,
 
-    @Column(name = "ma_danh_muc")
+    @Column(name = "CategoryID")
     var maDanhMuc: Long? = null,
 
-    @Column(name = "mo_ta")
+    @Column(name = "Description")
     var moTa: String? = null,
 
-    @Column(name = "so_luong_ton")
-    var soLuongTon: Int = 0,
-
-    @Column(name = "danh_gia")
-    var danhGia: Double? = 0.0
+    @Column(name = "IsActive")
+    var isActive: Boolean? = true
 )
