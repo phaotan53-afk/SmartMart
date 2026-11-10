@@ -1,4 +1,3 @@
-
 package com.example.smartmart.data.model
 
 data class Product(
